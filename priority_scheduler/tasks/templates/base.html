@@ -1,0 +1,27 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Task Scheduler{% endblock %}</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy++m9admjA9g6S2Y8B6R/UnwGJ8i/S1l" crossorigin="anonymous">
+
+    <!-- Add your CSS styles or external stylesheet links here -->
+</head>
+<body>
+    <header>
+        <h1>{% block header %}Task Scheduler{% endblock %}</h1>
+        <!-- Add a navigation bar or any other common elements here -->
+    </header>
+    <div class="container">
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</div>  
+    <footer>
+        <!-- Add footer content here -->
+    </footer>
+</body>
+</html>

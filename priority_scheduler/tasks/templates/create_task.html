@@ -1,0 +1,14 @@
+<!-- tasks/create_task.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Create Task</h2>
+  <form method="post" action="{% url 'create_task' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Task</button>
+  </form>
+  <a href="{% url 'home' %}">Back to Task List</a>
+</div>
+{% endblock %}
