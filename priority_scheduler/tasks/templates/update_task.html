@@ -2,11 +2,11 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h2>Create Task</h2>
-  <form method="post" action="{% url 'create_task' %}">
+  <h2>Edit Task</h2>
+  <form method="post" action="{% url 'update_task' task.id %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Create Task</button>
+    <button type="submit">Update Task</button>
   </form>
   <a href="{% url 'home' %}">Back to Task List</a>
 </div>

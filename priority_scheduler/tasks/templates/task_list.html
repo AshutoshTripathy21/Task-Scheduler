@@ -1,12 +1,79 @@
-<!-- tasks/task_list.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Task List</h2>
-  <ul>
-    {% for task in tasks %}
-      <li>{{ task.title }} - Priority: {{ task.priority }}</li>
-    {% endfor %}
-  </ul>
+  {% if pending_tasks %}
+    <h2>Pending Tasks</h2>
+    <ul id="pending-task-list">
+      {% for task in pending_tasks %}
+        <li>
+          <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a> - Deadline: <span class="deadline">{{ task.deadline }}</span>
+          <a href="{% url 'update_task' task.id %}">Edit</a>
+          <form method="post" action="{% url 'delete_task' task.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+          <form method="post" action="{% url 'mark_completed' task.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-sm">Mark as Completed</button>
+          </form>
+        </li>
+        <br>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if completed_tasks %}
+    <h2>Completed Tasks</h2>
+    <ul id="completed-task-list">
+      {% for task in completed_tasks %}
+        <li>
+          {{ task.title }} - Completed_at: <span class="duration">{{ task.completed_at }}</span> <span style="color: green;">(Completed)</span>
+          <form method="post" action="{% url 'delete_task' task.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </li>
+        <br>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
   <a href="{% url 'create_task' %}">Create Task</a>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function updateDurations() {
+    const tasks = document.querySelectorAll('#pending-task-list li, #completed-task-list li');
+    tasks.forEach(task => {
+      const deadlineText = task.querySelector('.deadline').textContent;
+      const deadline = new Date(deadlineText);
+      const currentTime = new Date();
+      const duration = calculateDuration(deadline, currentTime);
+      const durationElement = task.querySelector('.duration');
+      durationElement.textContent = duration;
+    });
+  }
+
+  function calculateDuration(deadline, currentTime) {
+    const diffInMs = deadline - currentTime;
+    if (diffInMs <= 0) {
+      return '0 days, 0 hours, 0 minutes, 0 seconds';
+    }
+    const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diffInMs % (1000 * 60)) / 1000);
+    return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+  }
+
+  function startUpdatingDurations() {
+    updateDurations();
+    setInterval(updateDurations, 1000);
+  }
+
+  window.onload = function() {
+    startUpdatingDurations();
+  };
+</script>
 {% endblock %}
